@@ -1,45 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Link } from '@remix-run/react';
+import { AppContext } from '~/AppContext';
 
-// import { getRecentPosts, getSimilarPosts } from '../services';
+const PostWidget = () => {
+  const appCtx = React.useContext(AppContext);
+  const [recentPosts, setRecentPosts] = useState<any[]>([]);
 
-const PostWidget = ({ categories, slug }: any) => {
-  const [relatedPosts, setRelatedPosts] = useState([]);
+  const slug = undefined;
+
+  const init = async () => {
+    let posts: any[] = [];
+    for (let i = appCtx.counter; i >= 0; i--) {
+      const post = await appCtx.contract?.getPost(i);
+
+      posts.push({
+        slug: i.toString(),
+        title: post.title,
+        author: post.author,
+      });
+    }
+    setRecentPosts(posts);
+  };
 
   useEffect(() => {
-    // if (slug) {
-    //   getSimilarPosts(categories, slug).then((result) => {
-    //     setRelatedPosts(result);
-    //   });
-    // } else {
-    //   getRecentPosts().then((result) => {
-    //     setRelatedPosts(result);
-    //   });
-    // }
-  }, [slug]);
+    if (appCtx.contract) {
+      init();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appCtx.contract]);
 
   return (
     <div className="p-8 mb-8 bg-white rounded-lg shadow-lg">
       <h3 className="pb-4 mb-8 text-xl font-semibold border-b">
         {slug ? 'Related Posts' : 'Recent Posts'}
       </h3>
-      {relatedPosts.map((post: any) => (
+      {recentPosts.map((post: any) => (
         <div key={post.title} className="flex items-center w-full mb-4">
-          <div className="flex-none w-16">
+          {/* <div className="flex-none w-16">
             <img
               alt={post.title}
               height="60px"
               width="60px"
               className="align-middle rounded-full"
-              src={post.featuredImage.url}
+              src={'https://picsum.photos/60/60'}
             />
-          </div>
+          </div> */}
           <div className="flex-grow ml-4">
             <p className="text-gray-500 font-xs">
               {moment(post.createdAt).format('DD, MMM, YYYY')}
             </p>
-            <Link to={`/post/${post.slug}`} className="text-md" key={post.title}>
+            <Link to={`/posts/${post.slug}`} className="text-md" key={post.title}>
               {post.title}
             </Link>
           </div>
