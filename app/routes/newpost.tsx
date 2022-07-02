@@ -134,8 +134,9 @@ export default function Index() {
                   type="button"
                   className="px-4 py-2 mt-4 text-white transition duration-500 bg-teal-500 border border-teal-500 rounded-md select-none ease hover:bg-teal-600 focus:outline-none focus:shadow-outline"
                   onClick={mint}
+                  disabled={appCtx.networkError}
                 >
-                  Mint
+                  {appCtx.networkError ? 'Before minting, switch network to Rinkeby' : 'Mint'}
                 </button>
               </div>
             </div>

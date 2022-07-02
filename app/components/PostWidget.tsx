@@ -12,6 +12,7 @@ const PostWidget = () => {
   const init = async () => {
     let posts: any[] = [];
     for (let i = appCtx.counter; i >= 0; i--) {
+      console.log({ temp: appCtx.provider?.network });
       const post = await appCtx.contract?.getPost(i);
 
       posts.push({
@@ -24,7 +25,7 @@ const PostWidget = () => {
   };
 
   useEffect(() => {
-    if (appCtx.contract) {
+    if (appCtx.contract && appCtx.provider) {
       init();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,17 +36,18 @@ const PostWidget = () => {
       <h3 className="pb-4 mb-8 text-xl font-semibold border-b">
         {slug ? 'Related Posts' : 'Recent Posts'}
       </h3>
+      {appCtx.networkError && <p className="text-red-500">Change Your net work to Rinkeby</p>}
       {recentPosts.map((post: any) => (
         <div key={post.title} className="flex items-center w-full mb-4">
           {/* <div className="flex-none w-16">
-            <img
-              alt={post.title}
-              height="60px"
-              width="60px"
-              className="align-middle rounded-full"
-              src={'https://picsum.photos/60/60'}
-            />
-          </div> */}
+        <img
+          alt={post.title}
+          height="60px"
+          width="60px"
+          className="align-middle rounded-full"
+          src={'https://picsum.photos/60/60'}
+        />
+      </div> */}
           <div className="flex-grow ml-4">
             <p className="text-gray-500 font-xs">
               {moment(post.createdAt).format('DD, MMM, YYYY')}

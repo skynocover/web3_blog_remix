@@ -7,6 +7,7 @@ interface AppContextProps {
   signer: ethers.providers.JsonRpcSigner | undefined;
   contract: ethers.Contract | undefined;
   counter: number;
+  networkError: boolean;
 }
 
 const AppContext = React.createContext<AppContextProps>(undefined!);
@@ -17,31 +18,42 @@ interface AppProviderProps {
 
 const AppProvider = ({ children }: AppProviderProps) => {
   const [provider, setProvider] = React.useState<ethers.providers.Web3Provider>();
-
   const [signer, setSigner] = React.useState<ethers.providers.JsonRpcSigner>();
   const [contract, setContract] = React.useState<ethers.Contract>();
-
   const [counter, setCounter] = React.useState<number>(0);
 
+  const [networkError, setNetworkError] = React.useState<boolean>(false);
+
   const init = async () => {
-    /* @ts-ignore */
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(address, abi, provider);
+    try {
+      /* @ts-ignore */
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(provider);
 
-    const counter = (await contract?.tokenIdCounter()) - 1;
-    setCounter(counter);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(address, abi, provider);
 
-    setProvider(provider);
-    setSigner(signer);
-    setContract(contract);
+      const counter = (await contract?.tokenIdCounter()) - 1;
+      setCounter(counter);
+      setSigner(signer);
+      setContract(contract);
+    } catch (error) {
+      if (provider?.network?.name !== 'rinkeby') {
+        setNetworkError(true);
+        return;
+      }
+    }
   };
 
   React.useEffect(() => {
     /* @ts-ignore */
     if (typeof window !== 'undefined' && window.ethereum) {
-      init();
+      /* @ts-ignore */
+      window.ethereum.enable().then(() => {
+        init();
+      });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /////////////////////////////////////////////////////
@@ -53,6 +65,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
         signer,
         contract,
         counter,
+        networkError,
       }}
     >
       {children}
