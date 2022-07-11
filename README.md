@@ -43,6 +43,10 @@
 
 ![new_post](./assets/new_post.png)
 
+- set tag by author
+
+![mint.png](assets/mint.png)
+
 ### Recent posts / Tags
 
 > Use CSR because SEO is no need here
