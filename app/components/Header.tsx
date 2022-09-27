@@ -17,7 +17,7 @@ const Header = () => {
           </Link>
           <span className="mt-2 ml-4 font-semibold text-white align-middle cursor-pointer md:float-right">
             <a
-              href="https://rinkeby.etherscan.io/address/0x77f23fbf81dcf86300a9e8fb63b3879a7d3784a1"
+              href="https://goerli.etherscan.io/address/0xfab5a9918537f7257f47b1fe0fba2e6155823d8d"
               target="_blank"
               rel="noreferrer"
             >
