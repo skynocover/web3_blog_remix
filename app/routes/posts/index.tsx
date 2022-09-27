@@ -18,6 +18,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return json({ posts });
   } catch (error: any) {
     console.log(error.message);
+    return json({ posts: [] });
   }
 };
 export default () => {

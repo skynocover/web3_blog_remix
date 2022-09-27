@@ -38,7 +38,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
       setSigner(signer);
       setContract(contract);
     } catch (error) {
-      if (provider?.network?.name !== 'rinkeby') {
+      if (provider?.network?.name !== 'goerli') {
         setNetworkError(true);
         return;
       }
